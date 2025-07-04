@@ -1,20 +1,32 @@
-# Build stage
+# Etapa 1: Build
 FROM golang:1.23.3-alpine AS builder
 
+# Instalar git y otras dependencias necesarias
+RUN apk add --no-cache git
+
+# Establecer directorio de trabajo
 WORKDIR /app
 
-# Establecer el directorio de trabajo dentro del contenedor
-WORKDIR /app
-
-# Copiar los archivos de dependencias Go
+# Copiar los archivos del proyecto
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copiar todo el código fuente del proyecto
 COPY . .
 
-# Exponer el puerto en el que la aplicación estará disponible
+# Compilar el binario
+RUN go build -o main cmd/main.go
+
+# Etapa 2: Imagen final ligera
+FROM alpine:3.19
+
+# Establecer el directorio de trabajo
+WORKDIR /app
+
+# Copiar el binario desde la etapa de construcción
+COPY --from=builder /app/main .
+
+# Exponer el puerto necesario
 EXPOSE 3016
 
-# Ejecutar la aplicación Go directamente (similar al comando 'go run')
-CMD ["go", "run", "cmd/main.go"]
+# Comando por defecto al iniciar el contenedor
+CMD ["./main"]
