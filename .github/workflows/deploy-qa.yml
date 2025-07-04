@@ -3,7 +3,7 @@ name: Deploy Pet Host Services to EC2
 on:
   push:
     branches:
-      - test  # Cambia esta rama si la tuya es diferente
+      - test  # Cambia esta rama si la tuya es diferente.
 
 jobs:
   deploy:
