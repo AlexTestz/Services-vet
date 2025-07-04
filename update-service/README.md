@@ -153,4 +153,4 @@ GET http://localhost:3017/api/services/name/corte
 - El endpoint con query param (`/api/services?name=...`) es más robusto para búsquedas con tildes, ñ o espacios.
 - El endpoint por ruta (`/api/services/name/:name`) puede fallar con caracteres especiales debido a la codificación de la URL.
 - El CORS está abierto para facilitar el desarrollo, pero se recomienda restringirlo en producción.
-- La conexión a MongoDB debe estar correctamente configurada y accesible desde el
+- La conexión a MongoDB debe estar correctamente configurado desde el
