@@ -3,7 +3,7 @@ name: Deploy Pet Host Services to EC2
 on:
   push:
     branches:
-      - QA  # Cambia esta rama si la tuya es diferente.
+      - QA  # Cambia esta rama si la tuya es diferente
 
 jobs:
   deploy:
@@ -21,23 +21,23 @@ jobs:
 
     - name: Build Docker images for services with tag "qa"
       run: |
-        docker build -t ${DOCKER_USERNAME}/update-service:qa ./update-service
-        docker build -t ${DOCKER_USERNAME}/get-service:qa ./get-service
-        docker build -t ${DOCKER_USERNAME}/delete-service:qa ./delete-service
-        docker build -t ${DOCKER_USERNAME}/create-service:qa ./create-service
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/update-service:qa ./update-service
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/get-service:qa ./get-service
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-service:qa ./delete-service
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/create-service:qa ./create-service
 
     - name: Push images to Docker Hub
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}  # Login en Docker Hub
-        docker push ${DOCKER_USERNAME}/update-service:qa
-        docker push ${DOCKER_USERNAME}/get-service:qa
-        docker push ${DOCKER_USERNAME}/delete-service:qa
-        docker push ${DOCKER_USERNAME}/create-service:qa
+        docker push ${{ secrets.DOCKER_USERNAME }}/update-service:qa
+        docker push ${{ secrets.DOCKER_USERNAME }}/get-service:qa
+        docker push ${{ secrets.DOCKER_USERNAME }}/delete-service:qa
+        docker push ${{ secrets.DOCKER_USERNAME }}/create-service:qa
 
     - name: Deploy services to EC2
       uses: appleboy/ssh-action@v1.0.0  # Usamos el SSH Action para ejecutar comandos en EC2
       with:
-        host: ${{ secrets.EC2_PUBLIC_IP }}  # La IP pública de tu instancia EC2
+        host: ${{ secrets.EC2_PUBLIC_IP }}  # Referencia a la IP pública de EC2 desde los secretos
         username: ubuntu  # En Ubuntu, el nombre de usuario es típicamente "ubuntu"
         key: ${{ secrets.EC2_SSH_KEY }}  # La clave privada SSH para autenticarte
         script: |
@@ -52,13 +52,13 @@ jobs:
           docker rm create-service || true
 
           # Descargar las últimas imágenes desde Docker Hub con la etiqueta "qa"
-          docker pull ${DOCKER_USERNAME}/update-service:qa
-          docker pull ${DOCKER_USERNAME}/get-service:qa
-          docker pull ${DOCKER_USERNAME}/delete-service:qa
-          docker pull ${DOCKER_USERNAME}/create-service:qa
+          docker pull ${{ secrets.DOCKER_USERNAME }}/update-service:qa
+          docker pull ${{ secrets.DOCKER_USERNAME }}/get-service:qa
+          docker pull ${{ secrets.DOCKER_USERNAME }}/delete-service:qa
+          docker pull ${{ secrets.DOCKER_USERNAME }}/create-service:qa
 
           # Ejecutar los nuevos contenedores con la etiqueta "qa"
-          docker run -d --name update-service -p 3017:3017 ${DOCKER_USERNAME}/update-service:qa
-          docker run -d --name get-service -p 3016:3016 ${DOCKER_USERNAME}/get-service:qa
-          docker run -d --name delete-service -p 3018:3018 ${DOCKER_USERNAME}/delete-service:qa
-          docker run -d --name create-service -p PORT=3015:PORT=3015 ${DOCKER_USERNAME}/create-service:qa
+          docker run -d --name update-service -p 3017:3017 ${{ secrets.DOCKER_USERNAME }}/update-service:qa
+          docker run -d --name get-service -p 3016:3016 ${{ secrets.DOCKER_USERNAME }}/get-service:qa
+          docker run -d --name delete-service -p 3018:3018 ${{ secrets.DOCKER_USERNAME }}/delete-service:qa
+          docker run -d --name create-service -p 3015:3015 ${{ secrets.DOCKER_USERNAME }}/create-service:qa
