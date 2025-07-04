@@ -105,6 +105,7 @@ El microservicio utiliza variables de entorno para la configuración de la base 
    docker run -p 3015:3015 --env-file .env alexmpz/create-service:qa
    ```
 
+PORT 3018
 ---
 
 ## Endpoints principales
