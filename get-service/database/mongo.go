@@ -1,0 +1,31 @@
+package database
+
+import (
+	"context"
+	"log"
+	"time"
+
+	"github.com/AlexTestz/get-service/config"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+)
+
+var Client *mongo.Client
+
+func ConnectMongo() {
+    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+    defer cancel()
+
+    clientOptions := options.Client().ApplyURI(config.GetEnv("MONGO_URI"))
+    client, err := mongo.Connect(ctx, clientOptions)
+    if err != nil {
+        log.Fatal("❌ Error connecting MongoDB:", err)
+    }
+
+    if err := client.Ping(ctx, nil); err != nil {
+        log.Fatal("❌ MongoDB not responding:", err)
+    }
+
+    log.Println("✅ Connected to MongoDB!")
+    Client = client
+}
