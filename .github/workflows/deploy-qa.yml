@@ -24,10 +24,10 @@ jobs:
 
     - name: Build Docker images
       run: |
-        docker build -t alexmpz/update-service:latest ./path/to/update-service
-        docker build -t alexmpz/get-service:latest ./path/to/get-service
-        docker build -t alexmpz/delete-service:latest ./path/to/delete-service
-        docker build -t alexmpz/create-service:latest ./path/to/create-service
+        docker build -t alexmpz/update-service:latest ./update-service
+        docker build -t alexmpz/get-service:latest ./get-service
+        docker build -t alexmpz/delete-service:latest ./delete-service
+        docker build -t alexmpz/create-service:latest ./create-service
 
     - name: Push Docker images to Docker Hub
       run: |
