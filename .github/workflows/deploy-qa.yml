@@ -41,7 +41,7 @@ jobs:
       with:
         host: ${{ secrets.EC2_IP }}  # IP pública de tu EC2
         username: ubuntu  # Nombre de usuario de EC2 (usualmente "ubuntu")
-        key: ${{ secrets.EC2_PRIVATE_KEY }}  # Clave privada para acceder a EC2a
+        key: ${{ secrets.EC2_PRIVATE_KEY }}  # Clave privada para acceder a EC2
         script: |
           # Iniciar sesión en Docker Hub
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
@@ -59,8 +59,23 @@ jobs:
           docker stop update-service get-service delete-service create-service || true
           docker rm update-service get-service delete-service create-service || true
 
-          # Ejecutar los contenedores con el archivo .env
-          docker run -d --name update-service -p 3015:3015 alexmpz/update-service:latest
-          docker run -d --name get-service -p 3016:3016 alexmpz/get-service:latest
-          docker run -d --name delete-service -p 3017:3017 alexmpz/delete-service:latest
-          docker run -d --name create-service -p 3018:3018 alexmpz/create-service:latest
+          # Ejecutar los contenedores con variables de entorno desde GitHub Secrets
+          docker run -d --name update-service -p ${{ secrets.UPDATE_SERVICE_PORT }}:${{ secrets.UPDATE_SERVICE_PORT }} \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            alexmpz/update-service:latest
+
+          docker run -d --name get-service -p ${{ secrets.GET_SERVICE_PORT }}:${{ secrets.GET_SERVICE_PORT }} \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            alexmpz/get-service:latest
+
+          docker run -d --name delete-service -p ${{ secrets.DELETE_SERVICE_PORT }}:${{ secrets.DELETE_SERVICE_PORT }} \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            alexmpz/delete-service:latest
+
+          docker run -d --name create-service -p ${{ secrets.CREATE_SERVICE_PORT }}:${{ secrets.CREATE_SERVICE_PORT }} \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            alexmpz/create-service:latest
