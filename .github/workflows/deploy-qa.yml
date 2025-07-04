@@ -21,10 +21,10 @@ jobs:
 
     - name: Build Docker images for services with tag "qa"
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/update-service:qa ./update-service
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/get-service:qa ./get-service
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-service:qa ./delete-service
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/create-service:qa ./create-service
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/update-service:qa ./update-service  # Ruta correcta
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/get-service:qa ./get-service  # Ruta correcta
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-service:qa ./delete-service  # Ruta correcta
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/create-service:qa ./create-service  # Ruta correcta
 
     - name: Push images to Docker Hub
       run: |
