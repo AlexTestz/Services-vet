@@ -20,7 +20,7 @@ WORKDIR /app
 
 # Copia el binario y el archivo .env
 COPY --from=builder /app/delete-service .
-COPY .env .
+COPY delete-service/.env .
 
 EXPOSE 3018
 

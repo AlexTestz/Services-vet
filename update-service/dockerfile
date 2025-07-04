@@ -20,7 +20,7 @@ WORKDIR /app
 
 # Copia el binario y el archivo .env
 COPY --from=builder /app/update-service .
-COPY .env .
+COPY update-service/.env .
 
 EXPOSE 3017
 
