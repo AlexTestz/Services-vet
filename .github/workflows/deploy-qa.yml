@@ -3,7 +3,7 @@ name: Deploy Pet Host Services to EC2
 on:
   push:
     branches:
-      - QA  # Cambia esta rama si la tuya es diferente,
+      - QA  # Cambia esta rama si la tuya es diferente
 
 jobs:
   deploy:
@@ -19,20 +19,20 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2  # Se realiza un checkout de tu código fuente
 
-    - name: Build Docker images for services with tag "qa"
+    - name: Build Docker images for services with tag "latest"
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/update-service ./update-service  # Ruta correcta
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/get-service ./get-service  # Ruta correcta
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-service ./delete-service  # Ruta correcta
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/create-service ./create-service  # Ruta correcta
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/update-service:latest ./update-service
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/get-service:latest ./get-service
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-service:latest ./delete-service
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/create-service:latest ./create-service
 
     - name: Push images to Docker Hub
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}  # Login en Docker Hub
-        docker push ${{ secrets.DOCKER_USERNAME }}/update-service
-        docker push ${{ secrets.DOCKER_USERNAME }}/get-service
-        docker push ${{ secrets.DOCKER_USERNAME }}/delete-service
-        docker push ${{ secrets.DOCKER_USERNAME }}/create-service
+        docker push ${{ secrets.DOCKER_USERNAME }}/update-service:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/get-service:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/delete-service:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/create-service:latest
 
     - name: Deploy services to EC2
       uses: appleboy/ssh-action@v1.0.0  # Usamos el SSH Action para ejecutar comandos en EC2
@@ -51,14 +51,14 @@ jobs:
           docker stop create-service || true
           docker rm create-service || true
 
-          # Descargar las últimas imágenes desde Docker Hub con la etiqueta "qa"
-          docker pull ${{ secrets.DOCKER_USERNAME }}/update-service
-          docker pull ${{ secrets.DOCKER_USERNAME }}/get-service
-          docker pull ${{ secrets.DOCKER_USERNAME }}/delete-service
-          docker pull ${{ secrets.DOCKER_USERNAME }}/create-service
+          # Descargar las últimas imágenes desde Docker Hub con la etiqueta "latest"
+          docker pull ${{ secrets.DOCKER_USERNAME }}/update-service:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/get-service:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/delete-service:latest
+          docker pull ${{ secrets.DOCKER_USERNAME }}/create-service:latest
 
-          # Ejecutar los nuevos contenedores con la etiqueta "qa"
-          docker run -d --name update-service -p 3017:3017 ${{ secrets.DOCKER_USERNAME }}/update-service
-          docker run -d --name get-service -p 3016:3016 ${{ secrets.DOCKER_USERNAME }}/get-service
-          docker run -d --name delete-service -p 3018:3018 ${{ secrets.DOCKER_USERNAME }}/delete-service
-          docker run -d --name create-service -p 3015:3015 ${{ secrets.DOCKER_USERNAME }}/create-service
+          # Ejecutar los nuevos contenedores con la etiqueta "latest"
+          docker run -d --name update-service -p 3017:3017 ${{ secrets.DOCKER_USERNAME }}/update-service:latest
+          docker run -d --name get-service -p 3016:3016 ${{ secrets.DOCKER_USERNAME }}/get-service:latest
+          docker run -d --name delete-service -p 3018:3018 ${{ secrets.DOCKER_USERNAME }}/delete-service:latest
+          docker run -d --name create-service -p 3015:3015 ${{ secrets.DOCKER_USERNAME }}/create-service:latest
