@@ -56,8 +56,19 @@ jobs:
           docker stop update-service get-service delete-service create-service || true
           docker rm update-service get-service delete-service create-service || true
 
-          # Ejecutar los contenedores
-          docker run -d --name update-service -p 3015:3015 alexmpz/update-service:latest
-          docker run -d --name get-service -p 3016:3016 alexmpz/get-service:latest
-          docker run -d --name delete-service -p 3017:3017 alexmpz/delete-service:latest
-          docker run -d --name create-service -p 3018:3018 alexmpz/create-service:latest
+          # Ejecutar los contenedores con las variables de entorno
+          docker run -d --name update-service -p 3015:3015 \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            alexmpz/update-service:latest
+
+          docker run -d --name get-service -p 3016:3016 \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            alexmpz/get-service:latest
+
+          docker run -d --name delete-service -p 3017:3017 \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            alexmpz/delete-service:latest
+
+          docker run -d --name create-service -p 3018:3018 \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            alexmpz/create-service:latest
