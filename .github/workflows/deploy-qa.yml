@@ -1,17 +1,20 @@
-name: Deploy Docker Containers to EC2
+name: Build and Deploy Docker Containers to EC2
 
 on:
   push:
     branches:
-      - QA  # O la rama que uses para producción
+      - main  # O la rama que uses para producción
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest #
+  build_and_deploy:
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
@@ -19,7 +22,21 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: SSH to EC2 and Deploy Docker Containers
+    - name: Build Docker images
+      run: |
+        docker build -t alexmpz/update-service:latest ./path/to/update-service
+        docker build -t alexmpz/get-service:latest ./path/to/get-service
+        docker build -t alexmpz/delete-service:latest ./path/to/delete-service
+        docker build -t alexmpz/create-service:latest ./path/to/create-service
+
+    - name: Push Docker images to Docker Hub
+      run: |
+        docker push alexmpz/update-service:latest
+        docker push alexmpz/get-service:latest
+        docker push alexmpz/delete-service:latest
+        docker push alexmpz/create-service:latest
+
+    - name: SSH to EC2 and deploy Docker containers
       uses: appleboy/ssh-action@v0.1.5
       with:
         host: ${{ secrets.EC2_IP }}  # IP pública de tu EC2
@@ -29,7 +46,7 @@ jobs:
           # Iniciar sesión en Docker Hub
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           
-          # Descargar las imágenes desde Docker Hub
+          # Descargar las imágenes desde Docker Hub (si no se subieron)
           docker pull alexmpz/update-service:latest
           docker pull alexmpz/get-service:latest
           docker pull alexmpz/delete-service:latest
