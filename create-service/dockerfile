@@ -20,7 +20,7 @@ WORKDIR /app
 
 # Copia el binario compilado y el archivo .env
 COPY --from=builder /app/create-service .
-COPY create-service/.env .
+COPY .env .
 
 # Expone el puerto (ajusta si usas otro)
 EXPOSE 3015

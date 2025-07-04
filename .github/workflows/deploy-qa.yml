@@ -21,18 +21,18 @@ jobs:
 
     - name: Build Docker images for services with tag "qa"
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/update-service:qa ./update-service  # Ruta correcta
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/get-service:qa ./get-service  # Ruta correcta
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-service:qa ./delete-service  # Ruta correcta
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/create-service:qa ./create-service  # Ruta correcta
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/update-service ./update-service  # Ruta correcta
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/get-service ./get-service  # Ruta correcta
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/delete-service ./delete-service  # Ruta correcta
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/create-service ./create-service  # Ruta correcta
 
     - name: Push images to Docker Hub
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}  # Login en Docker Hub
-        docker push ${{ secrets.DOCKER_USERNAME }}/update-service:qa
-        docker push ${{ secrets.DOCKER_USERNAME }}/get-service:qa
-        docker push ${{ secrets.DOCKER_USERNAME }}/delete-service:qa
-        docker push ${{ secrets.DOCKER_USERNAME }}/create-service:qa
+        docker push ${{ secrets.DOCKER_USERNAME }}/update-service
+        docker push ${{ secrets.DOCKER_USERNAME }}/get-service
+        docker push ${{ secrets.DOCKER_USERNAME }}/delete-service
+        docker push ${{ secrets.DOCKER_USERNAME }}/create-service
 
     - name: Deploy services to EC2
       uses: appleboy/ssh-action@v1.0.0  # Usamos el SSH Action para ejecutar comandos en EC2
@@ -52,13 +52,13 @@ jobs:
           docker rm create-service || true
 
           # Descargar las últimas imágenes desde Docker Hub con la etiqueta "qa"
-          docker pull ${{ secrets.DOCKER_USERNAME }}/update-service:qa
-          docker pull ${{ secrets.DOCKER_USERNAME }}/get-service:qa
-          docker pull ${{ secrets.DOCKER_USERNAME }}/delete-service:qa
-          docker pull ${{ secrets.DOCKER_USERNAME }}/create-service:qa
+          docker pull ${{ secrets.DOCKER_USERNAME }}/update-service
+          docker pull ${{ secrets.DOCKER_USERNAME }}/get-service
+          docker pull ${{ secrets.DOCKER_USERNAME }}/delete-service
+          docker pull ${{ secrets.DOCKER_USERNAME }}/create-service
 
           # Ejecutar los nuevos contenedores con la etiqueta "qa"
-          docker run -d --name update-service -p 3017:3017 ${{ secrets.DOCKER_USERNAME }}/update-service:qa
-          docker run -d --name get-service -p 3016:3016 ${{ secrets.DOCKER_USERNAME }}/get-service:qa
-          docker run -d --name delete-service -p 3018:3018 ${{ secrets.DOCKER_USERNAME }}/delete-service:qa
-          docker run -d --name create-service -p 3015:3015 ${{ secrets.DOCKER_USERNAME }}/create-service:qa
+          docker run -d --name update-service -p 3017:3017 ${{ secrets.DOCKER_USERNAME }}/update-service
+          docker run -d --name get-service -p 3016:3016 ${{ secrets.DOCKER_USERNAME }}/get-service
+          docker run -d --name delete-service -p 3018:3018 ${{ secrets.DOCKER_USERNAME }}/delete-service
+          docker run -d --name create-service -p 3015:3015 ${{ secrets.DOCKER_USERNAME }}/create-service
