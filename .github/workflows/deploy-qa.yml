@@ -3,7 +3,7 @@ name: Build and Deploy Docker Containers to EC2
 on:
   push:
     branches:
-      - QA  # O la rama que uses para producción-
+      - QA  # O la rama que uses para producción
 
 jobs:
   build_and_deploy:
