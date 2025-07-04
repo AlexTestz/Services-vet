@@ -52,6 +52,9 @@ jobs:
           docker pull alexmpz/delete-service:latest
           docker pull alexmpz/create-service:latest
           
+          # Comprobamos si las imágenes fueron descargadas correctamente
+          docker images
+
           # Detener y eliminar contenedores anteriores si es necesario
           docker stop update-service get-service delete-service create-service || true
           docker rm update-service get-service delete-service create-service || true
