@@ -43,24 +43,24 @@ jobs:
           docker push $DOCKERHUB_USERNAME/create-service:latest
 
       - name: SSH and deploy on EC2
-  uses: appleboy/ssh-action@v1.0.0
-  with:
-    host: ${{ secrets.EC2_HOST }}
-    username: ${{ secrets.EC2_USER }}
-    key: ${{ secrets.EC2_SSH_KEY }}
-    script: |
-      docker pull alexmpz/update-service:latest
-      docker rm -f update-service || true
-      docker run -d --name update-service -p 3015:3015 --env-file /home/ubuntu/app/update-service.env alexmpz/update-service:latest
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+             docker pull alexmpz/update-service:latest
+              docker rm -f update-service || true
+              docker run -d --name update-service -p 3015:3015 --env-file /home/ubuntu/app/update-service.env alexmpz/update-service:latest
 
-      docker pull alexmpz/get-service:latest
-      docker rm -f get-service || true
-      docker run -d --name get-service -p 3016:3016 --env-file /home/ubuntu/app/get-service.env alexmpz/get-service:latest
+              docker pull alexmpz/get-service:latest
+              docker rm -f get-service || true
+              docker run -d --name get-service -p 3016:3016 --env-file /home/ubuntu/app/get-service.env alexmpz/get-service:latest
 
-      docker pull alexmpz/delete-service:latest
-      docker rm -f delete-service || true
-      docker run -d --name delete-service -p 3017:3017 --env-file /home/ubuntu/app/delete-service.env alexmpz/delete-service:latest
+              docker pull alexmpz/delete-service:latest
+              docker rm -f delete-service || true
+              docker run -d --name delete-service -p 3017:3017 --env-file /home/ubuntu/app/delete-service.env alexmpz/delete-service:latest
 
-      docker pull alexmpz/create-service:latest
-      docker rm -f create-service || true
-      docker run -d --name create-service -p 3018:3018 --env-file /home/ubuntu/app/create-service.env alexmpz/create-service:latest
+              docker pull alexmpz/create-service:latest
+              docker rm -f create-service || true
+              docker run -d --name create-service -p 3018:3018 --env-file /home/ubuntu/app/create-service.env alexmpz/create-service:latest
