@@ -41,6 +41,6 @@ jobs:
 
           # Ejecutar los contenedores
           docker run -d --name update-service -p 3015:3015 alexmpz/update-service:latest
-          docker run -d --name get-service -p 3016:3015 alexmpz/get-service:latest
-          docker run -d --name delete-service -p 3017:3015 alexmpz/delete-service:latest
-          docker run -d --name create-service -p 3018:3015 alexmpz/create-service:latest
+          docker run -d --name get-service -p 3016:3016 alexmpz/get-service:latest
+          docker run -d --name delete-service -p 3017:3017 alexmpz/delete-service:latest
+          docker run -d --name create-service -p 3018:3018 alexmpz/create-service:latest
