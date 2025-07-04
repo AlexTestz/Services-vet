@@ -40,13 +40,13 @@ jobs:
       uses: appleboy/ssh-action@v0.1.5
       with:
         host: ${{ secrets.EC2_IP }}  # IP pública de tu EC2
-        username: ubuntu # Nombre de usuario de EC2 (usualmente "ubuntu")
+        username: ubuntu  # Nombre de usuario de EC2 (usualmente "ubuntu")
         key: ${{ secrets.EC2_PRIVATE_KEY }}  # Clave privada para acceder a EC2
         script: |
           # Iniciar sesión en Docker Hub
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           
-          # Descargar las imágenes desde Docker Hub (si no se subieron)
+          # Descargar las imágenes desde Docker Hub
           docker pull alexmpz/update-service:latest
           docker pull alexmpz/get-service:latest
           docker pull alexmpz/delete-service:latest
@@ -56,7 +56,7 @@ jobs:
           docker stop update-service get-service delete-service create-service || true
           docker rm update-service get-service delete-service create-service || true
 
-          # Ejecutar los contenedores con las variables de entorno
+          # Ejecutar los contenedores con la variable de entorno MONGO_URI
           docker run -d --name update-service -p 3015:3015 \
             -e MONGO_URI=${{ secrets.MONGO_URI }} \
             alexmpz/update-service:latest
