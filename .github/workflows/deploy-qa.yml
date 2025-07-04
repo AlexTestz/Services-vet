@@ -56,13 +56,16 @@ jobs:
     username: ${{ secrets.EC2_USER }}
     key: ${{ secrets.EC2_SSH_KEY }}
     script: |
+        script: |
         docker pull alexmpz/update-service:latest
         docker rm -f update-service || true
-        docker run -d --name update-service -p 3015:3015 \
-          -e MONGO_URI=${{ secrets.MONGO_URI }} \
-          -e DB_NAME=${{ secrets.DB_NAME }} \
-          -e PORT=${{ secrets.PORT_UPDATE }} \
+        docker run -d --name update-service \
+          -p '3015:3015' \
+          -e 'MONGO_URI=${{ secrets.MONGO_URI }}' \
+          -e 'DB_NAME=${{ secrets.DB_NAME }}' \
+          -e 'PORT=${{ secrets.PORT_UPDATE }}' \
           alexmpz/update-service:latest
+
 
         docker pull alexmpz/get-service:latest
         docker rm -f get-service || true
