@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-    config.LoadEnv()
+  //  config.LoadEnv()
     database.ConnectMongo()
 
     app := fiber.New()
