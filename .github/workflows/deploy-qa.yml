@@ -52,7 +52,7 @@ jobs:
             docker pull alexmpz/update-service:latest
             docker rm -f update-service || true
             docker run -d --name update-service \
-              -p 3015:${{ secrets.PORT_UPDATE }} \
+              -p 3017:${{ secrets.PORT_UPDATE }} \
               -e MONGO_URI='${{ secrets.MONGO_URI }}' \
               -e DB_NAME='${{ secrets.DB_NAME }}' \
               -e PORT='${{ secrets.PORT_UPDATE }}' \
@@ -70,7 +70,7 @@ jobs:
             docker pull alexmpz/delete-service:latest
             docker rm -f delete-service || true
             docker run -d --name delete-service \
-              -p 3017:${{ secrets.PORT_DELETE }} \
+              -p 3018:${{ secrets.PORT_DELETE }} \
               -e MONGO_URI='${{ secrets.MONGO_URI }}' \
               -e DB_NAME='${{ secrets.DB_NAME }}' \
               -e PORT='${{ secrets.PORT_DELETE }}' \
@@ -79,7 +79,7 @@ jobs:
             docker pull alexmpz/create-service:latest
             docker rm -f create-service || true
             docker run -d --name create-service \
-              -p 3018:${{ secrets.PORT_CREATE }} \
+              -p 3015:${{ secrets.PORT_CREATE }} \
               -e MONGO_URI='${{ secrets.MONGO_URI }}' \
               -e DB_NAME='${{ secrets.DB_NAME }}' \
               -e PORT='${{ secrets.PORT_CREATE }}' \
