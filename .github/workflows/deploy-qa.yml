@@ -61,22 +61,26 @@ jobs:
           docker run -d -p 3015:3015 \
             -e MONGO_URI=${{ secrets.MONGO_URI }} \
             -e DB_NAME=${{ secrets.DB_NAME }} \
+            -e PORT=3015 \
             alexmpz/create-service:qa
 
           # get-service en puerto 3016
           docker run -d -p 3016:3016 \
             -e MONGO_URI=${{ secrets.MONGO_URI }} \
             -e DB_NAME=${{ secrets.DB_NAME }} \
+            -e PORT=3016 \
             alexmpz/get-service:qa
 
           # update-service en puerto 3017
           docker run -d -p 3017:3017 \
             -e MONGO_URI=${{ secrets.MONGO_URI }} \
             -e DB_NAME=${{ secrets.DB_NAME }} \
+            -e PORT=3017 \
             alexmpz/update-service:qa
 
           # delete-service en puerto 3018
           docker run -d -p 3018:3018 \
             -e MONGO_URI=${{ secrets.MONGO_URI }} \
             -e DB_NAME=${{ secrets.DB_NAME }} \
+            -e PORT=3018 \
             alexmpz/delete-service:qa
