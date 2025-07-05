@@ -21,7 +21,7 @@ func GetServices(c *fiber.Ctx) error {
     // 📄 Condición de búsqueda
     filter := bson.M{}
     if name != "" {
-        filter = bson.M{"name": bson.M{"$regex": name, "$options": "i"}} // búsqueda insensible a mayúsculas
+        filter = bson.M{"name": bson.M{"$regex": name, "$options": "i"}} // 
     }
 
     cursor, err := collection.Find(ctx, filter)
@@ -55,7 +55,7 @@ func GetServiceByName(c *fiber.Ctx) error {
     defer cancel()
 
     var service Service
-    filter := bson.M{"name": bson.M{"$regex": name, "$options": "i"}} // <-- búsqueda insensible a mayúsculas/minúsculas
+    filter := bson.M{"name": bson.M{"$regex": name, "$options": "i"}} //
     err := collection.FindOne(ctx, filter).Decode(&service)
     if err != nil {
         return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Service not found"})

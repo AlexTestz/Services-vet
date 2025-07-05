@@ -8,5 +8,5 @@ import (
 func SetupRoutes(app *fiber.App) {
 	api := app.Group("/api/services")
 	api.Delete("/:id", controllers.DeleteService)
-	api.Delete("/name/:name", controllers.DeleteServiceByName) // Nueva ruta para eliminar por nombre
+	api.Delete("/name/:name", controllers.DeleteServiceByName) //
 }

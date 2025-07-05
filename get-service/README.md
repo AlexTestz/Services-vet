@@ -1,54 +1,56 @@
-# Get Service Microservice
+# 📄 Get Service Microservice
 
-## Descripción
-Microservicio encargado de consultar servicios veterinarios registrados en el sistema, permitiendo obtener todos los servicios o buscar por nombre.
-
----
-
-## Tecnologías utilizadas
-
-- **Lenguaje:** Go 1.23.3
-- **Framework:** Fiber v2
-- **Base de datos:** MongoDB
+## Description
+Microservice responsible for retrieving veterinary services registered in the system, allowing you to get all services or search by name.
 
 ---
 
-## Estilo de arquitectura
+## 🧪 Technologies Used
 
-- **API RESTful:** Todas las operaciones se exponen como endpoints HTTP siguiendo el estilo REST.
-
----
-
-## Patrones de diseño aplicados
-
-- **KISS (Keep It Simple, Stupid):** Código sencillo y directo, evitando complejidad innecesaria.
-- **DRY (Don't Repeat Yourself):** Reutilización de funciones y lógica para evitar duplicidad.
-- **Separación de responsabilidades:** Rutas, controladores y lógica de acceso a datos están claramente diferenciados.
+- **Language:** Go 1.23.3  
+- **Framework:** Fiber v2  
+- **Database:** MongoDB
 
 ---
 
-## Base de datos
+## ⚙️ Architecture Style
 
-- **MongoDB:** Conexión mediante el driver oficial de Go (`mongo-driver`). La URI y el nombre de la base de datos se configuran por variables de entorno.
-
----
-
-## Arquitectura interna
-
-- **N-capas:** Separación entre rutas (`routes`), controladores (`controllers`), modelos (`models`) y configuración de base de datos (`database`).
-- **Modelo similar a MVC:** Aunque no se usa un ORM, la estructura sigue la separación de responsabilidades típica de MVC.
+- **RESTful API:** All operations are exposed as HTTP endpoints following REST principles.
 
 ---
 
-## Seguridad y Middleware
+## 🧠 Design Patterns Applied
 
-- **CORS:** Configurado para aceptar peticiones desde cualquier origen, útil para desarrollo y pruebas.
-- **Validaciones:** Validación de datos de entrada en los controladores.
-- **Logs:** Registro de eventos importantes como la conexión a la base de datos.
+- **KISS (Keep It Simple, Stupid):** Clean and straightforward code avoiding unnecessary complexity.  
+- **DRY (Don't Repeat Yourself):** Logic and functions are reused to avoid duplication.  
+- **Separation of Concerns:** Routes, controllers, and data access logic are clearly separated.
 
 ---
 
-## Estructura del proyecto
+## 🗄️ Database
+
+- **MongoDB:** Connected using the official Go driver (`mongo-driver`). URI and database name are configured through environment variables.
+
+---
+
+## 🧱 Internal Architecture
+
+- **Layered Architecture:** Clear separation between `routes`, `controllers`, `models`, and database configuration.  
+- **MVC-like Structure:** While not using an ORM, the structure follows typical MVC responsibilities.
+
+---
+
+## 🔐 Security and Middleware
+
+- **CORS:** Configured to accept requests from any origin, useful for development and testing.  
+- **Validation:** Input validation is handled inside the controllers.  
+- **Logs:** Logs important events such as database connection status.
+
+---
+
+## 📁 Project Structure
+
+
 
 ```
 get-service/
@@ -74,58 +76,58 @@ get-service/
 
 ---
 
-## Variables de entorno
+## Environment variables
 
-El microservicio utiliza variables de entorno para la configuración de la base de datos y el puerto de escucha. Estas se definen en el archivo `.env`.
+The microservice uses environment variables for database configuration and listening port. These are defined in the `.env` file.
 
 
 
-## Ejecución local
+## Local execution
 
-1. Instala Go 1.23.3 o superior.
-2. Instala las dependencias:
-   ```sh
-   go mod download
-   ```
-3. Ejecuta el microservicio:
-   ```sh
-   go run cmd/main.go
-   ```
-
----
-
-## Docker local
-
-1. Construye la imagen:
-   ```sh
-   docker build -t alexmpz/get-service:qa .
-   ```
-2. Ejecuta el contenedor:
-   ```sh
-   docker run -p 3016:3016 --env-file .env alexmpz/get-service:qa
-   ```
+1. Install Go 1.23.3 or higher.
+2. Install the dependencies:
+```sh
+  go mod download
+  ```
+3. Run the microservice:
+```sh
+  go run cmd/main.go
+  ```
 
 ---
 
-## Endpoints principales
+## Local Docker
 
-### Obtener todos los servicios
+1. Build the image:
+```sh
+  docker build -t alexmpz/get-service:qa .
+  ```
+2. Run the container:
+```sh
+  docker run -p 3016:3016 --env-file .env alexmpz/get-service:qa
+  ```
+
+---
+
+## Main endpoints
+
+### Get all services
 
 - **GET** `/api/services/`
 
-### Buscar servicio por nombre (query param)
+### Search for service by name (query param)
 
-- **GET** `/api/services?name=<nombre_del_servicio>`
+- **GET** `/api/services?name=<service_name>`
 
-### Buscar servicio por nombre (parámetro de ruta, menos recomendado)
+### Search for service by name (route parameter, less recommended)
 
 - **GET** `/api/services/name/:name`
 
 ---
 
-## Ejemplo de request
+## Request example
 
-**Obtener todos los servicios:**
+**Get all services:**
 ```
 GET http://localhost:3016/api/services/
 ```
@@ -134,10 +136,9 @@ GET http://localhost:3016/api/services/
 ```
 
 ---
+## EXAMPLE
 
-## Ejemplo de respuesta exitosa
-
-**Respuesta para todos los servicios:**
+**Example response all services:**
 ```json
 [
   {
@@ -159,9 +160,9 @@ GET http://localhost:3016/api/services/
 
 
 
-## Notas
+## Notes
 
-- El endpoint con query param (`/api/services?name=...`) es más robusto para búsquedas con tildes, ñ o espacios.
-- El endpoint por ruta (`/api/services/name/:name`) puede fallar con caracteres especiales debido a la codificación de la URL.
-- El CORS está abierto para facilitar el desarrollo, pero se recomienda restringirlo en producción.
-- La conexión a MongoDB debe estar correctamente configurada y accesible desde el
+- The endpoint with query param (`/api/services?name=...`) is more robust for searches with accents, ñ, or spaces.
+- The endpoint by route (`/api/services/name/:name`) may fail with special characters due to URL encoding.
+- CORS is open to facilitate development, but it is recommended to restrict it in production.
+- The connection to MongoDB must be correctly configured and accessible from the

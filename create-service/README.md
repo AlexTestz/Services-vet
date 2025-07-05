@@ -1,54 +1,55 @@
-# Create Service Microservice
+# 🛠️ Create Service Microservice
 
-## Descripción
-Microservicio encargado de registrar servicios veterinarios en el sistema, permitiendo la gestión y consulta de los mismos.
-
----
-
-## Tecnologías utilizadas
-
-- **Lenguaje:** Go 1.23.3
-- **Framework:** Fiber v2
-- **Base de datos:** MongoDB
+## Description
+This microservice handles the registration of veterinary services in the system, enabling their management and retrieval.
 
 ---
 
-## Estilo de arquitectura
+## 🧪 Technologies Used
 
-- **API RESTful:** Todas las operaciones se exponen como endpoints HTTP siguiendo el estilo REST.
-
----
-
-## Patrones de diseño aplicados
-
-- **KISS (Keep It Simple, Stupid):** Código sencillo y directo, evitando complejidad innecesaria.
-- **DRY (Don't Repeat Yourself):** Reutilización de funciones y lógica para evitar duplicidad.
-- **Separación de responsabilidades:** Rutas, controladores y lógica de acceso a datos están claramente diferenciados.
+- **Language:** Go 1.23.3  
+- **Framework:** Fiber v2  
+- **Database:** MongoDB
 
 ---
 
-## Base de datos
+## ⚙️ Architecture Style
 
-- **MongoDB:** Conexión mediante el driver oficial de Go (`mongo-driver`). La URI y el nombre de la base de datos se configuran por variables de entorno.
-
----
-
-## Arquitectura interna
-
-- **N-capas:** Separación entre rutas (`routes`), controladores (`controllers`), modelos (`models`) y configuración de base de datos (`database`).
-- **Modelo similar a MVC:** Aunque no se usa un ORM, la estructura sigue la separación de responsabilidades típica de MVC.
+- **RESTful API:** All operations are exposed as HTTP endpoints following REST principles.
 
 ---
 
-## Seguridad y Middleware
+## 🧠 Design Patterns Applied
 
-- **CORS:** Configurado para aceptar peticiones desde cualquier origen, útil para desarrollo y pruebas.
-- **Validaciones:** Validación de datos de entrada en los controladores.
-- **Logs:** Registro de eventos importantes como la conexión a la base de datos.
+- **KISS (Keep It Simple, Stupid):** Clean and straightforward code with no unnecessary complexity.  
+- **DRY (Don't Repeat Yourself):** Functions and logic are reused to avoid redundancy.  
+- **Separation of Concerns:** Routes, controllers, and data access logic are clearly separated.
 
 ---
 
-## Estructura del proyecto
+## 🗄️ Database
+
+- **MongoDB:** Connected using the official Go `mongo-driver`. The URI and database name are configured through environment variables.
+
+---
+
+## 🧱 Internal Architecture
+
+- **Layered Architecture:** Clear separation into `routes`, `controllers`, `models`, and `database` configuration.  
+- **MVC-like Structure:** While no ORM is used, the project follows a typical MVC-like separation of responsibilities.
+
+---
+
+## 🔐 Security & Middleware
+
+- **CORS:** Configured to accept requests from all origins (useful for development).  
+- **Validation:** Input data is validated in the controller layer.  
+- **Logging:** Important events like database connection are logged.
+
+---
+
+## 📁 Project Structure
+
 
 ```
 create-service/
@@ -74,20 +75,24 @@ create-service/
 
 ---
 
-## Variables de entorno
 
-El microservicio utiliza variables de entorno para la configuración de la base de datos y el puerto de escucha. Estas se definen en el archivo `.env`.
+---
 
+## 🌐 Environment Variables
 
+The microservice uses environment variables to configure the database connection and the listening port. These are defined in the `.env` file.
 
-## Ejecución local
+---
 
-1. Instala Go 1.23.3 o superior.
-2. Instala las dependencias:
-   ```sh
+## 🚀 Local Execution
+
+1. Install Go 1.23.3 or higher.  
+2. Download dependencies:
+   ```bash
    go mod download
+
    ```
-3. Ejecuta el microservicio:
+3. Execute microservice:
    ```sh
    go run cmd/main.go
    ```
@@ -96,11 +101,11 @@ El microservicio utiliza variables de entorno para la configuración de la base 
 
 ## Docker local
 
-1. Construye la imagen:
+1. build docker image:
    ```sh
    docker build -t alexmpz/create-service:qa .
    ```
-2. Ejecuta el contenedor:
+2. run container:
    ```sh
    docker run -p 3015:3015 --env-file .env alexmpz/create-service:qa
    ```
@@ -108,13 +113,24 @@ El microservicio utiliza variables de entorno para la configuración de la base 
 PORT 3018
 ---
 
-## Endpoints principales
+## Endpoints
 
-### Registrar un servicio
+### Register a service
 
 - **POST** `/api/services/`
 
-#### Ejemplo de request
+#### Request example
+
+```json
+{
+  “name”: “Veterinary consultation”,
+  “description”: “General consultation for pets”,
+  “price”: 100,
+  “duration”: 30
+}
+```
+
+#### Example of a successful response
 
 ```json
 {
@@ -142,9 +158,9 @@ PORT 3018
 
 ---
 
-## Notas
+## Notes
 
-- Antes de registrar un servicio, se valida que los campos requeridos estén presentes y sean válidos.
-- El microservicio está preparado para ser desplegado en entornos Docker y Kubernetes.
-- El CORS está abierto para facilitar el desarrollo, pero se recomienda restringirlo en producción.
-- La conexión a MongoDB debe estar correctamente configurada y accesible desde el contenedor.
+- Before registering a service, the required fields are validated to ensure they are present and valid.
+- The microservice is ready to be deployed in Docker and Kubernetes environments.
+- CORS is open to facilitate development, but it is recommended to restrict it in production.
+- The connection to MongoDB must be correctly configured and accessible from the container.

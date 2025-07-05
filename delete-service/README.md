@@ -1,54 +1,56 @@
-# Delete Service Microservice
+# 🗑️ Delete Service Microservice
 
-## Descripción
-Microservicio encargado de eliminar servicios veterinarios del sistema, permitiendo la gestión eficiente de los mismos por ID o por nombre.
-
----
-
-## Tecnologías utilizadas
-
-- **Lenguaje:** Go 1.23.3
-- **Framework:** Fiber v2
-- **Base de datos:** MongoDB
+## Description
+This microservice is responsible for deleting veterinary services from the system, allowing efficient management by ID or name.
 
 ---
 
-## Estilo de arquitectura
+## 🧪 Technologies Used
 
-- **API RESTful:** Todas las operaciones se exponen como endpoints HTTP siguiendo el estilo REST.
-
----
-
-## Patrones de diseño aplicados
-
-- **KISS (Keep It Simple, Stupid):** Código sencillo y directo, evitando complejidad innecesaria.
-- **DRY (Don't Repeat Yourself):** Reutilización de funciones y lógica para evitar duplicidad.
-- **Separación de responsabilidades:** Rutas, controladores y lógica de acceso a datos están claramente diferenciados.
+- **Language:** Go 1.23.3  
+- **Framework:** Fiber v2  
+- **Database:** MongoDB
 
 ---
 
-## Base de datos
+## ⚙️ Architecture Style
 
-- **MongoDB:** Conexión mediante el driver oficial de Go (`mongo-driver`). La URI y el nombre de la base de datos se configuran por variables de entorno.
-
----
-
-## Arquitectura interna
-
-- **N-capas:** Separación entre rutas (`routes`), controladores (`controllers`), modelos (`models`) y configuración de base de datos (`database`).
-- **Modelo similar a MVC:** Aunque no se usa un ORM, la estructura sigue la separación de responsabilidades típica de MVC.
+- **RESTful API:** All operations are exposed via HTTP endpoints following REST principles.
 
 ---
 
-## Seguridad y Middleware
+## 🧠 Design Patterns Applied
 
-- **CORS:** Configurado para aceptar peticiones desde cualquier origen, útil para desarrollo y pruebas.
-- **Validaciones:** Validación de datos de entrada en los controladores.
-- **Logs:** Registro de eventos importantes como la conexión a la base de datos.
+- **KISS (Keep It Simple, Stupid):** Clean, straightforward code avoiding unnecessary complexity.  
+- **DRY (Don't Repeat Yourself):** Logic and functions are reused to avoid duplication.  
+- **Separation of Concerns:** Routes, controllers, and data access logic are clearly separated.
 
 ---
 
-## Estructura del proyecto
+## 🗄️ Database
+
+- **MongoDB:** Connected via the official Go `mongo-driver`. The URI and database name are configured using environment variables.
+
+---
+
+## 🧱 Internal Architecture
+
+- **Layered Architecture:** Code is separated into `routes`, `controllers`, `models`, and `database` configuration.  
+- **MVC-like Pattern:** Follows MVC principles even without an ORM.
+
+---
+
+## 🔐 Security & Middleware
+
+- **CORS:** Configured to accept requests from any origin (useful for development).  
+- **Validation:** Input validation is handled within the controllers.  
+- **Logging:** Logs important events such as database connection.
+
+---
+
+## 📁 Project Structure
+
+
 
 ```
 delete-service/
@@ -74,59 +76,59 @@ delete-service/
 
 ---
 
-## Variables de entorno
+## Environment variables
 
-El microservicio utiliza variables de entorno para la configuración de la base de datos y el puerto de escucha. Estas se definen en el archivo `.env`.
+The microservice uses environment variables for database configuration and listening port. These are defined in the `.env` file.
 
 
 
-## Ejecución local
+## Local execution
 
-1. Instala Go 1.23.3 o superior.
-2. Instala las dependencias:
-   ```sh
-   go mod download
-   ```
-3. Ejecuta el microservicio:
-   ```sh
-   go run cmd/main.go
-   ```
-
----
-
-## Docker local
-
-1. Construye la imagen:
-   ```sh
-   docker build -t alexmpz/delete-service:qa .
-   ```
-2. Ejecuta el contenedor:
-   ```sh
-   docker run -p 3018:3018 --env-file .env alexmpz/delete-service:qa
-   ```
+1. Install Go 1.23.3 or higher.
+2. Install the dependencies:
+```sh
+  go mod download
+  ```
+3. Run the microservice:
+```sh
+  go run cmd/main.go
+  ```
 
 ---
 
-## Endpoints principales
+## Local Docker
 
-### Eliminar un servicio por ID
+1. Build the image:
+```sh
+  docker build -t alexmpz/delete-service:qa .
+  ```
+2. Run the container:
+```sh
+  docker run -p 3018:3018 --env-file .env alexmpz/delete-service:qa
+  ```
+
+---
+
+## Main endpoints
+
+### Delete a service by ID
 
 - **DELETE** `/api/services/:id`
 
-### Eliminar un servicio por nombre
+### Delete a service by name
 
 - **DELETE** `/api/services/name/:name`
 
 ---
 
-### Ejemplo de request
+### Request example
 
-**Por ID:**
+**By ID:**
 ```
 DELETE http://localhost:3018/api/services/60c72b2f9b1e8b001c8e4b8a
 ```
 
-**Por nombre:**
+**By name:**
 ```
 DELETE http://localhost:3018/api/services/name/Consulta%20veterinaria
 ```
@@ -144,9 +146,9 @@ port 3017
 
 ---
 
-## Notas
+## Notes
 
-- El endpoint por nombre elimina solo el primer servicio que coincida exactamente con el nombre proporcionado.
-- El CORS está abierto para facilitar el desarrollo, pero se recomienda restringirlo en producción.
-- La conexión a MongoDB debe estar correctamente configurada y accesible desde el contenedor.
-- Se recomienda validar que el nombre del servicio sea único si se va a usar el endpoint de borrado por nombre en
+- The endpoint by name deletes only the first service that exactly matches the name provided.
+- CORS is open to facilitate development, but it is recommended to restrict it in production.
+- The connection to MongoDB must be correctly configured and accessible from the container.
+- It is recommended to validate that the service name is unique if you are going to use the delete endpoint by name in
