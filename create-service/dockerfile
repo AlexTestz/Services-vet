@@ -30,3 +30,4 @@ EXPOSE 3015
 
 # Default command when starting the container
 CMD ["./main"]
+
