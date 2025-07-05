@@ -25,13 +25,18 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # Paso 4: Pull imágenes Docker desde Docker Hub.
-    - name: Pull Docker images
+    # Paso 4: Build and upload docker images  
+    - name: Build and push Docker images
       run: |
-        docker pull alexmpz/create-service:latest
-        docker pull alexmpz/get-service:latest
-        docker pull alexmpz/update-service:latest
-        docker pull alexmpz/delete-service:latest
+        docker build -t alexmpz/create-service:latest ./create-service
+        docker build -t alexmpz/get-service:latest ./get-service  
+        docker build -t alexmpz/update-service:latest ./update-service
+        docker build -t alexmpz/delete-service:latest ./delete-service
+
+        docker push alexmpz/create-service:latest
+        docker push alexmpz/get-service:latest
+        docker push alexmpz/update-service:latest
+        docker push alexmpz/delete-service:latest
 
     # Paso 5: Deploy en EC2
     - name: Deploy to EC2
@@ -42,11 +47,11 @@ jobs:
         key: ${{ secrets.EC2_PRIVATE_KEY }}
         port: 22
         script: |
-          # Detener y eliminar contenedores existentes
+          # Stop and delete old containers if they exist
           docker stop $(docker ps -aq) || true
           docker rm $(docker ps -aq) || true
 
-          # Pull de imágenes
+          # Pull images from Docker Hub
           docker pull alexmpz/create-service:latest
           docker pull alexmpz/get-service:latest
           docker pull alexmpz/update-service:latest
