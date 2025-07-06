@@ -15,10 +15,10 @@ func GetServices(c *fiber.Ctx) error {
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
 
-    // ✅ Leer query param
+    // ✅ query parameter
     name := c.Query("name")
 
-    // 📄 Condición de búsqueda
+    // 📄 search
     filter := bson.M{}
     if name != "" {
         filter = bson.M{"name": bson.M{"$regex": name, "$options": "i"}} // 

@@ -5,14 +5,14 @@ import (
 	"os"
 )
 
-// Elimina la carga del archivo .env, ya que no es necesario ahora
+// Remove the .env file load, as it is no longer necessary
 // func LoadEnv() {
 //     if err := godotenv.Load(); err != nil {
-//         log.Println("⚠️ No .env file found")
+//         log.Println(“⚠️ No .env file found”)
 //     }
 // }
 
-// Esta función obtiene el valor de una variable de entorno
+// This function obtains the value of an environment variable
 func GetEnv(key string) string {
     value := os.Getenv(key)
     if value == "" {
