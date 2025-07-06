@@ -9,5 +9,5 @@ func SetupRoutes(app *fiber.App) {
     api := app.Group("/api/services")
     api.Get("/", controllers.GetServices)
 	api.Get("/name/:name", controllers.GetServiceByName)
-	api.Get(":id", controllers.GetServiceByID)
+	api.Get("/:id", controllers.GetServiceByID)
 }
