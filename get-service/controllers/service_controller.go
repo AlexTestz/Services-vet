@@ -63,3 +63,23 @@ func GetServiceByName(c *fiber.Ctx) error {
 
     return c.JSON(service)
 }
+
+func GetServiceByID(c *fiber.Ctx) error {
+    id := c.Params("id")
+    if id == "" {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "ID is required"})
+    }
+
+    collection := database.Client.Database("pet_care_services_db").Collection("services")
+    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancel()
+
+    var service Service
+    filter := bson.M{"_id": id}
+    err := collection.FindOne(ctx, filter).Decode(&service)
+    if err != nil {
+        return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Service not found"})
+    }
+
+    return c.JSON(service)
+}
