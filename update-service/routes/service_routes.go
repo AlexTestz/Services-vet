@@ -8,6 +8,6 @@ import (
 func SetupRoutes(app *fiber.App) {
 	api := app.Group("/api/services")
 	api.Put("/:id", controllers.UpdateService)
-	    api.Put("/:name", controllers.UpdateServiceByName) // 
+	   // api.Put("/:name", controllers.UpdateServiceByName) // 
 
 }
