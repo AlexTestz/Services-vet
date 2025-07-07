@@ -1,86 +1,86 @@
-name: Build & Deploy to EC2 # QA Branch,
+name: Build and Deploy to EC2
 
 on:
-  push:
+  pull_request:
     branches:
-      - QAADAS
+      - main
 
 jobs:
-  build-and-deploy:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
-    env:
-      DOCKERHUB_USERNAME: alexmpz
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    # Paso 1: Checkout code..
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+    # Paso 2: Configuración Docker
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
-      - name: Build and push update-service
-        run: |
-          docker build -t $DOCKERHUB_USERNAME/update-service ./update-service
-          docker push $DOCKERHUB_USERNAME/update-service:latest
+    # Paso 3: Login Docker Hub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push get-service
-        run: |
-          docker build -t $DOCKERHUB_USERNAME/get-service ./get-service
-          docker push $DOCKERHUB_USERNAME/get-service:latest
+    # Paso 4: Build and upload docker images  
+    - name: Build and push Docker images
+      run: |
+        docker build -t alexmpz/create-service:qa ./create-service
+        docker build -t alexmpz/get-service:qa ./get-service  
+        docker build -t alexmpz/update-service:qa ./update-service
+        docker build -t alexmpz/delete-service:qa ./delete-service
 
-      - name: Build and push delete-service
-        run: |
-          docker build -t $DOCKERHUB_USERNAME/delete-service ./delete-service
-          docker push $DOCKERHUB_USERNAME/delete-service:latest
+        docker push alexmpz/create-service:qa
+        docker push alexmpz/get-service:qa
+        docker push alexmpz/update-service:qa
+        docker push alexmpz/delete-service:qa
 
-      - name: Build and push create-service
-        run: |
-          docker build -t $DOCKERHUB_USERNAME/create-service ./create-service
-          docker push $DOCKERHUB_USERNAME/create-service:latest
+    # Paso 5: Deploy en EC2.
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_PRIVATE_KEY }}
+        port: 22
+        script: |
+          # Stop and delete old containers if they exist
+          docker stop $(docker ps -aq) 
+          docker rm $(docker ps -aq) 
 
-      - name: SSH and deploy on EC2
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            docker pull alexmpz/update-service:latest
-            docker rm -f update-service || true
-            docker run -d --name update-service \
-              -p 3017:${{ secrets.PORT_UPDATE }} \
-              -e MONGO_URI='${{ secrets.MONGO_URI }}' \
-              -e DB_NAME='${{ secrets.DB_NAME }}' \
-              -e PORT='${{ secrets.PORT_UPDATE }}' \
-              alexmpz/update-service:latest
+          # Pull images from Docker Hub
+          docker pull alexmpz/create-service:qa
+          docker pull alexmpz/get-service:qa
+          docker pull alexmpz/update-service:qa
+          docker pull alexmpz/delete-service:qa
 
-            docker pull alexmpz/get-service:latest
-            docker rm -f get-service || true
-            docker run -d --name get-service \
-              -p 3016:${{ secrets.PORT_GET }} \
-              -e MONGO_URI='${{ secrets.MONGO_URI }}' \
-              -e DB_NAME='${{ secrets.DB_NAME }}' \
-              -e PORT='${{ secrets.PORT_GET }}' \
-              alexmpz/get-service:latest
+          # create-service en puerto 3015
+          docker run -d -p 3015:3015 \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            -e PORT=3015 \
+            alexmpz/create-service:qa
 
-            docker pull alexmpz/delete-service:latest
-            docker rm -f delete-service || true
-            docker run -d --name delete-service \
-              -p 3018:${{ secrets.PORT_DELETE }} \
-              -e MONGO_URI='${{ secrets.MONGO_URI }}' \
-              -e DB_NAME='${{ secrets.DB_NAME }}' \
-              -e PORT='${{ secrets.PORT_DELETE }}' \
-              alexmpz/delete-service:latest
+          # get-service en puerto 3016
+          docker run -d -p 3016:3016 \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            -e PORT=3016 \
+            alexmpz/get-service:qa
 
-            docker pull alexmpz/create-service:latest
-            docker rm -f create-service || true
-            docker run -d --name create-service \
-              -p 3015:${{ secrets.PORT_CREATE }} \
-              -e MONGO_URI='${{ secrets.MONGO_URI }}' \
-              -e DB_NAME='${{ secrets.DB_NAME }}' \
-              -e PORT='${{ secrets.PORT_CREATE }}' \
-              alexmpz/create-service:latest
+          # update-service en puerto 3017
+          docker run -d -p 3017:3017 \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            -e PORT=3017 \
+            alexmpz/update-service:qa
+
+          # delete-service en puerto 3018
+          docker run -d -p 3018:3018 \
+            -e MONGO_URI=${{ secrets.MONGO_URI }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            -e PORT=3018 \
+            alexmpz/delete-service:qa
