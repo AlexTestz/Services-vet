@@ -23,8 +23,8 @@ func main() {
 
 	app.Listen(":" + config.GetEnv("PORT"))
 	app.Use(cors.New(cors.Config{
-  AllowOrigins: "*",  // Permite solicitudes desde cualquier origen
-  AllowMethods: "GET, POST, PUT, DELETE",  // Permite PUT
+  AllowOrigins: "*",  //
+  AllowMethods: "GET, POST, PUT, DELETE", 
 
 }))
 
